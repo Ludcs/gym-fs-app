@@ -29,6 +29,11 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
 
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true, // Puedes establecer el valor predeterminado según tus necesidades
+  },
+
   isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

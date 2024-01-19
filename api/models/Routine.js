@@ -34,6 +34,7 @@ const Routine = sequelize.define('Routine', {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    foreignKey: true,
   },
 });
 

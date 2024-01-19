@@ -1,11 +1,13 @@
+const Routine = require('../models/Routine');
 const User = require('../models/User');
 
 async function syncModels() {
   try {
-    await User.sync();
-    console.log('La tabla para Users se ha creado!!!');
+    await User.sync({ alter: true });
+    await Routine.sync({ alter: true });
+    console.log('Sync OK');
   } catch (error) {
-    console.log('Error al sincronizar el modelo User:', error);
+    console.log('Sync Error:', error);
   }
 }
 
