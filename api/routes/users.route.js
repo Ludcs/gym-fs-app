@@ -6,6 +6,7 @@ const {
   deleteUser,
   createRoutine,
   getRoutineByUserId,
+  updateRoutineByUserId,
 } = require('../controllers/users.controllers');
 
 //instanciar usersRouter
@@ -18,7 +19,8 @@ usersRouter.put('/users/:id', updateUser);
 usersRouter.delete('/users/:id', deleteUser);
 
 //Routines
-usersRouter.post('/users/createRoutine', createRoutine);
 usersRouter.get('/users/routine/:userId', getRoutineByUserId);
+usersRouter.post('/users/createRoutine', createRoutine);
+usersRouter.put('/users/routine/:userId', updateRoutineByUserId);
 
 module.exports = usersRouter;

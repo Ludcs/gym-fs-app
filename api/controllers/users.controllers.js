@@ -54,7 +54,6 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
 
     //recuperar los nuevos datos del usuario que fue actualizado
-
     const updatedUser = await User.findByPk(id);
 
     res.status(200).json({ updatedUser, message: 'Usuario actualizado' });
@@ -147,6 +146,30 @@ const getRoutineByUserId = async (req, res) => {
   }
 };
 
+const updateRoutineByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log('userId:', userId);
+    const { objetive, medicalBackground, startDate, descriptionRoutine } =
+      req.body;
+    const updatedRoutineRows = await Routine.update(
+      { objetive, medicalBackground, startDate, descriptionRoutine },
+      { where: { userId } }
+    );
+
+    if (updatedRoutineRows[0] === 0)
+      return res.status(404).json({ message: 'Rutina no encontrada' });
+
+    const updatedRoutine = await Routine.findOne({ where: { userId } });
+    res.status(200).json(updatedRoutine);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Error server al actualizar la rutina de este usuario',
+    });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -154,4 +177,5 @@ module.exports = {
   deleteUser,
   createRoutine,
   getRoutineByUserId,
+  updateRoutineByUserId,
 };
