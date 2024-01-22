@@ -1,23 +1,20 @@
 'use client';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { FaRegUser, FaKey, FaRegEyeSlash, FaRegEye } from 'react-icons/fa6';
-import { useRouter } from 'next/navigation';
-import Loader from './Loader';
+import { useState } from 'react';
+import { FaKey, FaRegEye, FaRegEyeSlash, FaRegUser } from 'react-icons/fa6';
 
-export default function Login({ setShowRegisterForm }) {
-  const [loginValues, setLoginValues] = useState({
+export default function Register({ setShowRegisterForm }) {
+  const [registerValues, setRegisterValues] = useState({
+    name: '',
+    lastname: '',
     email: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setLoginValues((prevValues) => ({
+    setRegisterValues((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
@@ -25,23 +22,15 @@ export default function Login({ setShowRegisterForm }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
     try {
-      const { data } = await axios.post(
-        'http://localhost:8000/auth/login',
-        loginValues
+      const res = await axios.post(
+        'http://localhost:8000/auth/register',
+        registerValues
       );
-      console.log(data);
-
-      if (data.existingUser.isAdmin) {
-        router.push('/admin');
-      } else {
-        router.push('/home');
-      }
-      setLoading(false);
+      console.log(res);
+      setShowRegisterForm(false);
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
   };
 
@@ -54,11 +43,35 @@ export default function Login({ setShowRegisterForm }) {
         <FaRegUser size={20} className="text-secondary" />
         <input
           className="w-full outline-none p-2 bg-primary border-b border-secondary text-secondary"
+          type="text"
+          name="name"
+          value={registerValues.name}
+          placeholder="Name"
+          autoFocus={true}
+          autoComplete="off"
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex w-full gap-2 items-center">
+        <FaRegUser size={20} className="text-secondary" />
+        <input
+          className="w-full outline-none p-2 bg-primary border-b border-secondary text-secondary"
+          type="text"
+          name="lastname"
+          value={registerValues.lastname}
+          placeholder="Lastname"
+          autoComplete="off"
+          onChange={handleChange}
+        />
+      </div>
+      <div className="flex w-full gap-2 items-center">
+        <FaRegUser size={20} className="text-secondary" />
+        <input
+          className="w-full outline-none p-2 bg-primary border-b border-secondary text-secondary"
           type="email"
           name="email"
-          value={loginValues.email}
+          value={registerValues.email}
           placeholder="Email"
-          autoFocus={true}
           autoComplete="off"
           onChange={handleChange}
         />
@@ -70,7 +83,7 @@ export default function Login({ setShowRegisterForm }) {
             className="w-full outline-none p-2 bg-primary border-b border-secondary text-secondary"
             type={showPassword ? 'text' : 'password'}
             name="password"
-            value={loginValues.password}
+            value={registerValues.password}
             placeholder="Password"
             autoComplete="off"
             onChange={handleChange}
@@ -90,22 +103,22 @@ export default function Login({ setShowRegisterForm }) {
           )}
         </div>
       </div>
-      {loading ? (
-        <Loader />
-      ) : (
-        <button
-          className="bg-primary border border-secondary text-secondary w-fit p-2 rounded-md transition-colors duration-300  hover:bg-secondary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loginValues.email === '' || loginValues.password === ''}
-        >
-          Ingresar
-        </button>
-      )}
-
+      <button
+        className="bg-primary border border-secondary text-secondary w-fit p-2 rounded-md transition-colors duration-300  hover:bg-secondary hover:text-primary hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={
+          registerValues.name === '' ||
+          registerValues.lastname === '' ||
+          registerValues.email === '' ||
+          registerValues.password === ''
+        }
+      >
+        Registrarse
+      </button>
       <p className="text-secondary">
-        No tienes una cuenta? Create una{' '}
+        Ya tienes una cuenta? Ingresa{' '}
         <span
           className="cursor-pointer font-bold underline"
-          onClick={() => setShowRegisterForm(true)}
+          onClick={() => setShowRegisterForm(false)}
         >
           aca!
         </span>
