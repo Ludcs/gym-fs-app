@@ -85,6 +85,20 @@ const deleteUser = async (req, res) => {
 };
 
 //ROUTINES
+const getAllRoutines = async (req, res) => {
+  try {
+    const routines = await Routine.findAll();
+    if (!routines || routines.length === 0)
+      return res.status(404).json({ message: 'No se encontraron las rutinas' });
+    res.status(200).json(routines);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: 'Error server al obtener todas las rutinas', error });
+  }
+};
+
 const createRoutine = async (req, res) => {
   try {
     const {
@@ -175,6 +189,7 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  getAllRoutines,
   createRoutine,
   getRoutineByUserId,
   updateRoutineByUserId,

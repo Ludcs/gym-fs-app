@@ -4,6 +4,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
+  getAllRoutines,
   createRoutine,
   getRoutineByUserId,
   updateRoutineByUserId,
@@ -19,6 +20,7 @@ usersRouter.put('/users/:id', updateUser);
 usersRouter.delete('/users/:id', deleteUser);
 
 //Routines
+usersRouter.get('/routines/all', getAllRoutines);
 usersRouter.get('/users/routine/:userId', getRoutineByUserId);
 usersRouter.post('/users/createRoutine', createRoutine);
 usersRouter.put('/users/routine/:userId', updateRoutineByUserId);

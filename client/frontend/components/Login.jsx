@@ -1,11 +1,13 @@
 'use client';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
 import { FaRegUser, FaKey, FaRegEyeSlash, FaRegEye } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import Loader from './Loader';
 
 export default function Login({ setShowRegisterForm }) {
+  // const [, setCookies] = useCookies(['access_token']);
   const [loginValues, setLoginValues] = useState({
     email: '',
     password: '',
@@ -31,9 +33,13 @@ export default function Login({ setShowRegisterForm }) {
         'http://localhost:8000/auth/login',
         loginValues
       );
+      Cookies.set('userName', data.userName, { expires: 7, path: '/' });
+      Cookies.set('userId', data.userId, { expires: 7, path: '/' });
+      Cookies.set('isAdmin', data.isAdmin, { expires: 7, path: '/' });
+      Cookies.set('token', data.token, { expires: 7, path: '/' });
       console.log(data);
 
-      if (data.existingUser.isAdmin) {
+      if (data.isAdmin) {
         router.push('/admin');
       } else {
         router.push('/home');

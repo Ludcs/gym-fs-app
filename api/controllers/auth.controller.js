@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+// const cookie = require('cookie');
 const User = require('../models/User');
 
 //register
@@ -44,7 +46,38 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid)
       return res.status(401).json({ message: 'Password incorrecto' });
 
-    return res.status(200).json({ existingUser, message: 'Login exitoso' });
+    const token = jwt.sign({ id: existingUser.id }, process.env.SECRETJWT);
+
+    // const cookieOptions = {
+    //   httpOnly: true,
+    //   maxAge: 60 * 60 * 24 * 7, // 1 week
+    //   sameSite: 'strict',
+    //   path: '/',
+    // };
+
+    // res.setHeader(
+    //   'Set-cookie',
+    //   cookie.serialize('token', token, cookieOptions),
+    //   cookie.serialize('userId', existingUser.id.toString(), cookieOptions),
+    //   cookie.serialize(
+    //     'isAdmin',
+    //     existingUser.isAdmin.toString(),
+    //     cookieOptions
+    //   ),
+    //   cookie.serialize(
+    //     'userName',
+    //     `${existingUser.name} ${existingUser.lastname}`,
+    //     cookieOptions
+    //   )
+    // );
+
+    return res.status(200).json({
+      userId: existingUser.id,
+      isAdmin: existingUser.isAdmin,
+      userName: `${existingUser.name} ${existingUser.lastname}`,
+      token,
+      message: 'Login exitoso',
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Error al hacer login' });
