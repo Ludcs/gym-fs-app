@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { Op } = require('sequelize');
 const User = require('../models/User');
 const Routine = require('../models/Routine');
 
@@ -20,6 +21,41 @@ const getAllUsers = async (req, res) => {
       .json({ message: 'Error server al obtener todos los usuarios', error });
   }
 };
+
+// const getUserByName = async (req, res) => {
+//   const { name, lastname } = req.query;
+//   try {
+//     const user = await User.findOne({
+//       where: {
+//         [Op.and]: [
+//           {
+//             name: {
+//               [Op.like]: `%${name}%`, // Case-insensitive search for name
+//             },
+//           },
+//           {
+//             lastname: {
+//               [Op.like]: `%${lastname}%`, // Case-insensitive search for lastname
+//             },
+//           },
+//         ],
+//       },
+//     });
+
+//     if (!user)
+//       return res.status(404).json({
+//         message: 'No se encontró un usuario con ese nombre o apellido',
+//       });
+
+//     res.status(200).json(user);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       message: 'Error server al obtener usuario por nombre y apellido',
+//       error,
+//     });
+//   }
+// };
 
 const getUserById = async (req, res) => {
   try {

@@ -1,59 +1,63 @@
-import { cookies } from 'next/headers';
+'use client';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import Link from 'next/link';
-import {
-  FaPlus,
-  FaSistrix,
-  FaPen,
-  FaRegTrashCan,
-  FaUnlock,
-} from 'react-icons/fa6';
+import { FaPlus, FaPen, FaRegTrashCan, FaUnlock } from 'react-icons/fa6';
+import { useState, useEffect } from 'react';
+import SearchUser from '@/components/SearchUser';
 
-const cookieStore = cookies().getAll();
-const allCookies = cookieStore.map(({ name, value }) => ({ [name]: value }));
-const isAdminObject = allCookies.find((cookie) => 'isAdmin' in cookie);
-const isAdmin = isAdminObject ? isAdminObject.isAdmin : null;
-console.log(isAdmin);
+export default function AdminPage() {
+  const [users, setUsers] = useState([]);
+  const [filteredUser, setFilteredUser] = useState([]);
+  const [userNameCookie, setUserNameCookie] = useState('');
 
-async function getAllUsers() {
-  const res = await fetch(`http://localhost:8000/users`);
+  const getAllUsers = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8000/users`);
+      const usersData = res.data;
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
+      const formattedData = usersData.map((user) => {
+        const formattedCreatedAt = new Date(
+          user.createdAt
+        ).toLocaleDateString();
+        return { ...user, createdAt: formattedCreatedAt };
+      });
 
-  const data = await res.json();
+      const sortedData = formattedData.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
 
-  const formattedData = data.map((user) => {
-    const formattedCreatedAt = new Date(user.createdAt).toLocaleDateString();
-    return { ...user, createdAt: formattedCreatedAt };
-  });
+      setUsers(sortedData);
+      setFilteredUser(sortedData);
+    } catch (error) {
+      console.error('Error al obtener todos los usuarios', error);
+    }
+  };
 
-  const sortedData = formattedData.sort((a, b) => a.name.localeCompare(b.name));
-  return sortedData;
-}
+  useEffect(() => {
+    getAllUsers();
+    //Para no tener problema de hidratacion con el client component:
+    setUserNameCookie(Cookies.get('userName'));
+  }, []);
 
-export default async function AdminPage() {
-  const data = await getAllUsers();
+  const searchOneUser = (searchString) => {
+    let userFounded = users.filter((el) =>
+      `${el.name} ${el.lastname}`
+        .toLowerCase()
+        .includes(searchString.toLowerCase())
+    );
+    setFilteredUser(userFounded);
+  };
 
-  // const allCookies = cookieStore.getAll().map((el) => {
-  //   return {
-  //     name: el.value,
-  //   };
-  // });
-
-  // const { value } = cookies().get('userName');
-  //const {value} = cookies().get('userId');
-  // const userName = value;
-  // console.log({ userName });
   return (
-    <div className="p-4 w-full bg-white flex flex-col gap-4">
+    <div className="p-4 w-full bg-white flex flex-col gap-4 min-h-screen">
       <div className="w-full flex items-center justify-start font-bold">
-        <p>Bienvenido administrador:</p>
-        {allCookies.map((el, idx) => (
-          <p className="pl-1 font-normal" key={idx}>
-            {el.userName}
-          </p>
-        ))}
+        <p>
+          Bienvenido administrador:{' '}
+          <span className="pl-1 font-normal">
+            {userNameCookie ? userNameCookie : null}
+          </span>
+        </p>
       </div>
       <div className="flex justify-between items-center w-full text-primary">
         <h1 className="font-bold uppercase">Lista de usuarios</h1>
@@ -65,49 +69,83 @@ export default async function AdminPage() {
         </div>
       </div>
       {/* Buscar usuario */}
-      <form action="">
-        <div className="flex relative items-center">
-          <FaSistrix size={20} className="absolute left-2 text-primary" />
-          <input
-            type="text"
-            className="border border-primary rounded-md py-2 px-8 w-full outline-none"
-            placeholder="Buscar usuario"
-          />
-        </div>
-      </form>
+      <SearchUser searchOneUser={searchOneUser} />
       {/* Mapeo de usuarios */}
       <div className="grid grid-cols-2 gap-4">
-        {data.map((el) => (
-          <div
-            key={el.id}
-            className={`${
-              el.isActive === false
-                ? 'flex flex-col justify-center items-center border border-red-600  text-red-600 rounded-md p-2 gap-2'
-                : 'flex flex-col justify-center items-center border border-primary text-primary rounded-md p-2 gap-2'
-            }`}
-          >
-            <p className="font-bold">
-              {el.name} {el.lastname}
-            </p>
-            <p className="text-center">Creado el: {el.createdAt.split('T')}</p>
-            {el.isActive === true ? (
-              <p className="font-bold">Estado: Activo</p>
-            ) : (
-              <p className="font-bold">Estado: Inactivo</p>
-            )}
-            <div className="flex flex-row justify-center items-center gap-6">
-              {el.isActive === true && (
-                <FaPen size={20} className="cursor-pointer" />
-              )}
+        {users.length === 0 ? (
+          <p>Cargando...</p>
+        ) : filteredUser.length === 0 ? (
+          <p>No se encontro el usuario</p>
+        ) : (
+          filteredUser.map((el) => (
+            <div
+              key={el.id}
+              className={`${
+                el.isActive === false
+                  ? 'flex flex-col justify-center items-center border border-red-600  text-red-600 rounded-md p-2 gap-2'
+                  : 'flex flex-col justify-center items-center border border-primary text-primary rounded-md p-2 gap-2'
+              }`}
+            >
+              <p className="font-bold">
+                {el.name} {el.lastname}
+              </p>
+              <p className="text-center">
+                Creado el: {el.createdAt.split('T')}
+              </p>
               {el.isActive === true ? (
-                <FaRegTrashCan size={20} className="cursor-pointer" />
+                <p className="font-bold">Estado: Activo</p>
               ) : (
-                <FaUnlock size={20} className="cursor-pointer" />
+                <p className="font-bold">Estado: Inactivo</p>
               )}
+              <div className="flex flex-row justify-center items-center gap-6">
+                {el.isActive === true && (
+                  <FaPen size={20} className="cursor-pointer" />
+                )}
+                {el.isActive === true ? (
+                  <FaRegTrashCan size={20} className="cursor-pointer" />
+                ) : (
+                  <FaUnlock size={20} className="cursor-pointer" />
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
 }
+
+// const cookieStore = cookies().getAll();
+// const allCookies = cookieStore.map(({ name, value }) => ({ [name]: value }));
+// const isAdminObject = allCookies.find((cookie) => 'isAdmin' in cookie);
+// const isAdmin = isAdminObject ? isAdminObject.isAdmin : null;
+
+// async function getAllUsers() {
+//   const res = await fetch(`http://localhost:8000/users`);
+
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
+
+//   const data = await res.json();
+
+// const formattedData = data.map((user) => {
+//   const formattedCreatedAt = new Date(user.createdAt).toLocaleDateString();
+//   return { ...user, createdAt: formattedCreatedAt };
+// });
+
+//   const sortedData = formattedData.sort((a, b) => a.name.localeCompare(b.name));
+//   return sortedData;
+// }
+
+// async function getUserByName(name = 'Luciano', lastname = 'De Carolis') {
+//   const res = await fetch(
+//     `http://localhost:8000/users/search?name=${name}&lastname=${lastname}`
+//   );
+
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch user data');
+//   }
+//   const data = await res.json();
+//   return data;
+// }

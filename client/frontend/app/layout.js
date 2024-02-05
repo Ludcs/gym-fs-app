@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="bg-primary">
       <body className={`flex flex-col min-h-screen ${roboto.className}`}>
         <Navbar />
-        <div className="flex-grow">{children}</div>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>

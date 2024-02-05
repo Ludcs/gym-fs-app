@@ -15,6 +15,7 @@ const usersRouter = express.Router();
 
 //Users
 usersRouter.get('/users', getAllUsers);
+// usersRouter.get('/users/search', getUserByName);
 usersRouter.get('/users/:id', getUserById);
 usersRouter.put('/users/:id', updateUser);
 usersRouter.delete('/users/:id', deleteUser);

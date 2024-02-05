@@ -12,12 +12,9 @@ import {
 
 export default function Sidebar({ setShowSidebar }) {
   const pathname = usePathname();
-  console.log(pathname);
-
   const router = useRouter();
 
   const isAdmin = Cookies.get('isAdmin');
-  console.log(isAdmin);
 
   const clearCookies = () => {
     Cookies.remove('userName');
