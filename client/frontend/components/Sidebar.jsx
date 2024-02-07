@@ -26,7 +26,8 @@ export default function Sidebar({ setShowSidebar }) {
   const handleLogout = () => {
     clearCookies();
     setShowSidebar(false);
-    router.push('/');
+    window.location.href = '/';
+    //router.push('/');
   };
 
   return (

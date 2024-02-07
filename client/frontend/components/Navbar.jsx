@@ -19,7 +19,9 @@ export default function Navbar() {
           onClick={() => setShowSidebar(true)}
         />
       )} */}
-      {pathname !== '/' ? (
+      {(pathname !== '/') &
+      (pathname !== '/login') &
+      (pathname !== '/register') ? (
         <FaBars
           className="cursor-pointer text-primary"
           size={20}

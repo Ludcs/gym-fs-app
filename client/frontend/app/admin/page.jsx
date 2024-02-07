@@ -2,14 +2,25 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { FaPlus, FaPen, FaRegTrashCan, FaUnlock } from 'react-icons/fa6';
-import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import SearchUser from '@/components/SearchUser';
+import { useState, useEffect } from 'react';
+import { FaPlus, FaPen, FaRegTrashCan, FaUnlock } from 'react-icons/fa6';
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [filteredUser, setFilteredUser] = useState([]);
   const [userNameCookie, setUserNameCookie] = useState('');
+
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   const token = Cookies.get('token');
+  //   console.log({ token });
+  //   if (!token) {
+  //     router.push('/');
+  //   }
+  // }, []);
 
   const getAllUsers = async () => {
     try {
