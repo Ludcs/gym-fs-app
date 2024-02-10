@@ -41,11 +41,11 @@ export default function Login() {
         'http://localhost:8000/auth/login',
         loginValues
       );
-      // Cookies.set('userName', data.userName, { expires: 7, path: '/' });
-      // Cookies.set('userId', data.userId, { expires: 7, path: '/' });
-      // Cookies.set('isAdmin', data.isAdmin, { expires: 7, path: '/' });
-      // Cookies.set('token', data.token, { expires: 7, path: '/' });
-      console.log(data);
+      Cookies.set('userName', data.userName, { expires: 7, path: '/' });
+      Cookies.set('userId', data.userId, { expires: 7, path: '/' });
+      Cookies.set('isAdmin', data.isAdmin, { expires: 7, path: '/' });
+      Cookies.set('token', data.token, { expires: 7, path: '/' });
+      //console.log(data);
 
       const token = data.token;
 

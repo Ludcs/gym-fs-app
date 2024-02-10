@@ -2,7 +2,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import SearchUser from '@/components/SearchUser';
 import { useState, useEffect } from 'react';
 import { FaPlus, FaPen, FaRegTrashCan, FaUnlock } from 'react-icons/fa6';
@@ -11,16 +10,6 @@ export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [filteredUser, setFilteredUser] = useState([]);
   const [userNameCookie, setUserNameCookie] = useState('');
-
-  const router = useRouter();
-
-  // useEffect(() => {
-  //   const token = Cookies.get('token');
-  //   console.log({ token });
-  //   if (!token) {
-  //     router.push('/');
-  //   }
-  // }, []);
 
   const getAllUsers = async () => {
     try {
@@ -60,6 +49,20 @@ export default function AdminPage() {
     setFilteredUser(userFounded);
   };
 
+  const handleDisabledUser = async (id) => {
+    console.log(id);
+
+    try {
+      const res = await axios.delete(`http://localhost:8000/users/${id}`, {
+        isActive: false,
+      });
+      console.log(res);
+      await getAllUsers();
+    } catch (error) {
+      console.error(`Error al desactivar usuario con el id ${id}:`, error);
+    }
+  };
+
   return (
     <div className="p-4 w-full bg-white flex flex-col gap-4 min-h-screen">
       <div className="w-full flex items-center justify-start font-bold">
@@ -72,12 +75,6 @@ export default function AdminPage() {
       </div>
       <div className="flex justify-between items-center w-full text-primary">
         <h1 className="font-bold uppercase">Lista de usuarios</h1>
-        <div className="flex justify-between items-center bg-white text-primary border border-primary p-2 gap-2 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors duration-200">
-          <Link href={'/admin/create'}>
-            <button>Crear rutina</button>
-          </Link>
-          <FaPlus size={20} />
-        </div>
       </div>
       {/* Buscar usuario */}
       <SearchUser searchOneUser={searchOneUser} />
@@ -110,12 +107,28 @@ export default function AdminPage() {
               )}
               <div className="flex flex-row justify-center items-center gap-6">
                 {el.isActive === true && (
-                  <FaPen size={20} className="cursor-pointer" />
+                  <Link href={'/admin/create'} title="Crear rutina">
+                    <FaPlus size={20} className="cursor-pointer" />
+                  </Link>
+                )}
+                {el.isActive === true && (
+                  <Link href={'/admin/create'} title="Editar rutina">
+                    <FaPen size={20} className="cursor-pointer" />
+                  </Link>
                 )}
                 {el.isActive === true ? (
-                  <FaRegTrashCan size={20} className="cursor-pointer" />
+                  <FaRegTrashCan
+                    size={20}
+                    className="cursor-pointer"
+                    title="Inactivar usuario"
+                    onClick={() => handleDisabledUser(el.id)}
+                  />
                 ) : (
-                  <FaUnlock size={20} className="cursor-pointer" />
+                  <FaUnlock
+                    size={20}
+                    className="cursor-pointer"
+                    title="Activar usuario"
+                  />
                 )}
               </div>
             </div>

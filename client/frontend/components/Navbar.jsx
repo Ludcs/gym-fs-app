@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { FaBars } from 'react-icons/fa6';
 import Sidebar from './Sidebar';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -29,9 +30,12 @@ export default function Navbar() {
         />
       ) : null}
       {showSidebar && <Sidebar setShowSidebar={setShowSidebar} />}
-      <h1 className=" w-full text-primary font-bold text-lg text-end">
+      <Link
+        href={'/'}
+        className=" w-full text-primary font-bold text-lg text-end"
+      >
         Devs Gym
-      </h1>
+      </Link>
     </div>
   );
 }
