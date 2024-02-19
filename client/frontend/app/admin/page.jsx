@@ -49,6 +49,17 @@ export default function AdminPage() {
     setFilteredUser(userFounded);
   };
 
+  // const handleAddRoutineById = async (id) => {
+  //   console.log(id);
+
+  //   try {
+  //     const { data } = await axios.get(`http://localhost:8000/users/${id}`);
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const handleDisabledUser = async (id) => {
     console.log(id);
 
@@ -90,7 +101,7 @@ export default function AdminPage() {
               key={el.id}
               className={`${
                 el.isActive === false
-                  ? 'flex flex-col justify-center items-center border border-red-600  text-red-600 rounded-md p-2 gap-2'
+                  ? 'flex flex-col justify-center items-center border border-primary  text-primary rounded-md p-2 gap-2 opacity-60'
                   : 'flex flex-col justify-center items-center border border-primary text-primary rounded-md p-2 gap-2'
               }`}
             >
@@ -101,19 +112,18 @@ export default function AdminPage() {
                 Creado el: {el.createdAt.split('T')}
               </p>
               {el.isActive === true ? (
-                <p className="font-bold">Estado: Activo</p>
+                <p className="font-bold">Estado: Con rutina</p>
               ) : (
-                <p className="font-bold">Estado: Inactivo</p>
+                <p className="font-bold">Estado: Sin rutina</p>
               )}
               <div className="flex flex-row justify-center items-center gap-6">
-                {el.isActive === true && (
-                  <Link href={'/admin/create'} title="Crear rutina">
-                    <FaPlus size={20} className="cursor-pointer" />
-                  </Link>
-                )}
-                {el.isActive === true && (
-                  <Link href={'/admin/create'} title="Editar rutina">
+                {el.isActive === true ? (
+                  <Link href={`/admin/create/${el.id}`} title="Editar rutina">
                     <FaPen size={20} className="cursor-pointer" />
+                  </Link>
+                ) : (
+                  <Link href={`/admin/create/${el.id}`} title="Crear rutina">
+                    <FaPlus size={20} className="cursor-pointer" />
                   </Link>
                 )}
                 {el.isActive === true ? (

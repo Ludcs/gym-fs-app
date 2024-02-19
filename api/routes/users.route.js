@@ -23,7 +23,7 @@ usersRouter.delete('/users/:id', deleteUser);
 //Routines
 usersRouter.get('/routines/all', getAllRoutines);
 usersRouter.get('/users/routine/:userId', getRoutineByUserId);
-usersRouter.post('/users/createRoutine', createRoutine);
-usersRouter.put('/users/routine/:userId', updateRoutineByUserId);
+usersRouter.post('/users/createRoutine/:id', createRoutine);
+usersRouter.put('/users/updateRoutine/:userId', updateRoutineByUserId);
 
 module.exports = usersRouter;

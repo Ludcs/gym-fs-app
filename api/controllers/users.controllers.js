@@ -144,9 +144,10 @@ const createRoutine = async (req, res) => {
       medicalBackground,
       startDate,
       descriptionRoutine,
-      userId,
     } = req.body;
     console.log(req.body);
+
+    const { id } = req.params;
 
     const parsedStartDate = moment(startDate, 'DD/MM/YYYY', true);
     if (!parsedStartDate.isValid())
@@ -161,7 +162,7 @@ const createRoutine = async (req, res) => {
       medicalBackground,
       startDate: formattedStartDate,
       descriptionRoutine,
-      userId,
+      userId: id,
     });
 
     res

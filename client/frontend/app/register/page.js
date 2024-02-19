@@ -9,8 +9,10 @@ import {
   FaRegUser,
   FaSquareEnvelope,
 } from 'react-icons/fa6';
+import { useRouter } from 'next/navigation';
 
 export default function Register() {
+  const router = useRouter();
   const [registerValues, setRegisterValues] = useState({
     name: '',
     lastname: '',
@@ -35,7 +37,7 @@ export default function Register() {
         registerValues
       );
       console.log(res);
-      setShowRegisterForm(false);
+      router.push('/login');
     } catch (error) {
       console.log(error);
     }
