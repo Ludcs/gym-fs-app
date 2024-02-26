@@ -163,7 +163,10 @@ const createRoutine = async (req, res) => {
       startDate: formattedStartDate,
       descriptionRoutine,
       userId: id,
+      userHasRoutine: true,
     });
+
+    await User.update({ isActive: true }, { where: { id: id } });
 
     res
       .status(201)
@@ -203,8 +206,20 @@ const updateRoutineByUserId = async (req, res) => {
     console.log('userId:', userId);
     const { objetive, medicalBackground, startDate, descriptionRoutine } =
       req.body;
+
+    const parsedStartDate = moment(startDate, 'DD/MM/YYYY', true);
+    if (!parsedStartDate.isValid())
+      return res.status(400).json({ message: 'Formato de fecha inválido' });
+
+    const formattedStartDate = parsedStartDate.toISOString();
+
     const updatedRoutineRows = await Routine.update(
-      { objetive, medicalBackground, startDate, descriptionRoutine },
+      {
+        objetive,
+        medicalBackground,
+        startDate: formattedStartDate,
+        descriptionRoutine,
+      },
       { where: { userId } }
     );
 

@@ -4,8 +4,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function CreatePage() {
+  const router = useRouter();
   const { id } = useParams();
   const [quillValue, setQuillValue] = useState('');
   const [routineValues, setRoutineValues] = useState({
@@ -16,6 +18,7 @@ export default function CreatePage() {
     medicalBackground: '',
     startDate: '',
     descriptionRoutine: '',
+    userHasRoutine: null,
   });
 
   const modules = {
@@ -69,7 +72,9 @@ export default function CreatePage() {
         medicalBackground: data.medicalBackground,
         startDate: formattedStartDate,
         descriptionRoutine: data.descriptionRoutine,
+        userHasRoutine: data.userHasRoutine,
       }));
+
       setQuillValue(data.descriptionRoutine);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -89,10 +94,10 @@ export default function CreatePage() {
   //TODO: no puedo depender de si hay o no userId porque siempre va a haber. Probar agregar otra key al model de Routine x ej: hasRoutine = false (by default) y despues al crear la rutina pasarlo a true
   const createOrUpdateRoutine = async () => {
     try {
-      if (routineValues.userId) {
+      if (routineValues.userHasRoutine) {
         // Actualizar rutina existente
         await axios.put(
-          `http://localhost:8000/users/routine/${routineValues.userId}`,
+          `http://localhost:8000/users/updateRoutine/${id}`,
           routineValues
         );
       } else {
@@ -101,6 +106,9 @@ export default function CreatePage() {
           `http://localhost:8000/users/createRoutine/${id}`,
           routineValues
         );
+        await axios.put(`http://localhost:8000/users/${id}`, {
+          isActive: true,
+        });
       }
       // Redireccionar o mostrar mensaje de éxito
     } catch (error) {
@@ -108,12 +116,28 @@ export default function CreatePage() {
     }
   };
 
+  const formatDateForBackend = (dateString) => {
+    //console.log(dateString);
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const handleRoutineValues = (event) => {
     const { name, value } = event.target;
     console.log({ name, value });
+
     setRoutineValues((prevValues) => ({
       ...prevValues,
-      [name]: value,
+      [name]: name === 'startDate' ? formatDateForBackend(value) : value,
+    }));
+  };
+
+  const handleQuillChange = (value) => {
+    console.log(value);
+    setQuillValue(value);
+    setRoutineValues((prevValues) => ({
+      ...prevValues,
+      descriptionRoutine: value,
     }));
   };
 
@@ -124,7 +148,13 @@ export default function CreatePage() {
       descriptionRoutine: quillValue,
     });
     console.log(routineValues);
-    await createOrUpdateRoutine();
+
+    try {
+      await createOrUpdateRoutine();
+      router.push('/admin');
+    } catch (error) {
+      console.error('Error al crear o actualizar la rutina:', error);
+    }
   };
 
   return (
@@ -180,12 +210,12 @@ export default function CreatePage() {
           modules={modules}
           formats={formats}
           value={quillValue}
-          onChange={setQuillValue}
+          onChange={handleQuillChange}
           autoComplete="off"
         />
         {/* <div dangerouslySetInnerHTML={{ __html: quillValue }} /> */}
         <button className="w-fit m-auto border border-primary p-2 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors duration-200">
-          {routineValues.descriptionRoutine ? 'Actualizar' : 'Crear'}
+          {routineValues.userHasRoutine ? 'Actualizar' : 'Crear'}
         </button>
       </form>
     </div>

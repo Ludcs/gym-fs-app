@@ -3,18 +3,16 @@ import { createContext, useContext, useCallback, useMemo } from 'react';
 import Cookies from 'js-cookie';
 
 export const AuthContext = createContext({
-  login: (token) => {
-    console.log(token);
-  },
+  login: () => {},
   logout: () => {},
 });
 
 export default function AuthContextProvider({ children }) {
   const login = useCallback(function (token) {
-    Cookies.set('token', JSON.stringify(token));
+    Cookies.set('AuthContext login token', JSON.stringify(token));
   }, []);
   const logout = useCallback(function () {
-    Cookies.remove('token');
+    Cookies.remove('AuthContext logout token');
   }, []);
 
   const value = useMemo(

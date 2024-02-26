@@ -36,6 +36,11 @@ const Routine = sequelize.define('Routine', {
     allowNull: false,
     foreignKey: true,
   },
+  userHasRoutine: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 });
 
 Routine.associations = (models) => {

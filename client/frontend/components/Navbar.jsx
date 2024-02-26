@@ -32,7 +32,7 @@ export default function Navbar() {
       {showSidebar && <Sidebar setShowSidebar={setShowSidebar} />}
       <Link
         href={'/'}
-        className=" w-full text-primary font-bold text-lg text-end"
+        className="w-full text-primary font-bold text-lg text-end"
       >
         Devs Gym
       </Link>

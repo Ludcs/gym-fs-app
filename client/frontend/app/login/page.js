@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthContext } from '../contexts/authContext';
+//import { useAuthContext } from '../contexts/authContext';
 import Loader from '@/components/Loader';
 
 export default function Login() {
@@ -23,7 +23,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { login } = useAuthContext();
+  //const { login } = useAuthContext();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -47,7 +47,7 @@ export default function Login() {
       Cookies.set('token', data.token, { expires: 7, path: '/' });
       //console.log(data);
 
-      const token = data.token;
+      //const token = data.token;
 
       if (data.isAdmin) {
         router.push('/admin');
@@ -55,7 +55,7 @@ export default function Login() {
         router.push('/home');
       }
       setLoading(false);
-      login(token);
+      //login(token);
     } catch (error) {
       console.log(error);
       setLoading(false);

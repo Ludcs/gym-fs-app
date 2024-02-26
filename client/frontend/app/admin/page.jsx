@@ -5,11 +5,13 @@ import Link from 'next/link';
 import SearchUser from '@/components/SearchUser';
 import { useState, useEffect } from 'react';
 import { FaPlus, FaPen, FaRegTrashCan, FaUnlock } from 'react-icons/fa6';
+import Loader from '@/components/Loader';
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [filteredUser, setFilteredUser] = useState([]);
   const [userNameCookie, setUserNameCookie] = useState('');
+  //const [loading, setLoading] = useState(true);
 
   const getAllUsers = async () => {
     try {
@@ -92,7 +94,10 @@ export default function AdminPage() {
       {/* Mapeo de usuarios */}
       <div className="grid grid-cols-2 gap-4">
         {users.length === 0 ? (
-          <p>Cargando...</p>
+          //TODO: cambiar el Loader por como lo hice en '/home'
+          <div className="w-full flex justify-center items-center">
+            <Loader />
+          </div>
         ) : filteredUser.length === 0 ? (
           <p>No se encontro el usuario</p>
         ) : (
