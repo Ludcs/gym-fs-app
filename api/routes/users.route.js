@@ -3,6 +3,7 @@ const {
   getAllUsers,
   getUserById,
   updateUser,
+  reactiveUser,
   deleteUser,
   getAllRoutines,
   createRoutine,
@@ -18,6 +19,7 @@ usersRouter.get('/users', getAllUsers);
 // usersRouter.get('/users/search', getUserByName);
 usersRouter.get('/users/:id', getUserById);
 usersRouter.put('/users/:id', updateUser);
+usersRouter.put('/users/reactive/:id', reactiveUser);
 usersRouter.delete('/users/:id', deleteUser);
 
 //Routines

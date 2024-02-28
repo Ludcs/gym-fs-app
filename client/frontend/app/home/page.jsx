@@ -1,5 +1,5 @@
 'use client';
-import Loader from '@/components/Loader';
+
 // import { cookies } from 'next/headers';
 
 // const cookieStore = cookies().getAll();
@@ -21,6 +21,8 @@ import Loader from '@/components/Loader';
 // }
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import Loader from '@/components/Loader';
+import 'react-quill/dist/quill.core.css';
 import { useEffect, useState } from 'react';
 
 const userId = Cookies.get('userId');
@@ -35,13 +37,14 @@ export default function HomePage() {
   const [startDate, setStartDate] = useState();
   const [descriptionRoutine, setDescriptionRoutine] = useState('');
   const [loading, setLoading] = useState(true);
+  const [noRoutine, setNoRoutine] = useState(false);
 
   const getRoutineByUserId = async () => {
     try {
       const { data } = await axios.get(
         `http://localhost:8000/users/routine/${userId}`
       );
-      // console.log({ data });
+      console.log({ data });
       setObjetive(data.objetive);
       setMedicalBackground(data.medicalBackground);
       setStartDate(data.startDate);
@@ -49,6 +52,8 @@ export default function HomePage() {
       setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
+      setNoRoutine(true);
     }
   };
 
@@ -71,34 +76,49 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          <div className="py-2">
+          <div className="py-2 flex flex-col gap-2">
             <h1 className="text-center uppercase font-bold text-xl">
-              {userName}
+              <span className="font-normal">Bienvenido</span> {userName} 👋
             </h1>
-            {formattedDate ? (
+            {startDate !== undefined ? (
               <p className="text-center">
                 Esta es tu rutina actual creada el:{' '}
                 <span className="font-bold">{formattedDate}</span>
               </p>
             ) : (
-              <p className="text-center">Aun no tienes una rutina</p>
+              <p className="text-center text-lg p-4">
+                Aun no tienes una rutina, contacta con tu profesor para que te
+                cree una! Cuando la tengas la podras ver aca 🏋️‍♂️
+              </p>
             )}
           </div>
-          <div className="py-4">
-            {objetive && <p>🟡 Objetivo: {objetive}</p>}
+          <div className="py-4 flex flex-col gap-2">
+            {objetive && (
+              <p>
+                🟡 Objetivo: <span className="font-bold">{objetive}</span>
+              </p>
+            )}
             {medicalBackground && (
-              <p>🟡 Antecedente medico: {medicalBackground}</p>
+              <p>
+                🟡 Antecedente medico:{' '}
+                <span className="font-bold">{medicalBackground}</span>
+              </p>
             )}
           </div>
-          <div className="py-4">
-            <h2 className="text-center uppercase text-lg pb-2 font-bold">
-              Rutina
-            </h2>
-            {/* <p className="text-justify">{descriptionRoutine}</p> */}
-            {descriptionRoutine && (
-              <p dangerouslySetInnerHTML={{ __html: descriptionRoutine }} />
-            )}
-          </div>
+          {descriptionRoutine !== '' ? (
+            <div className="py-4 border border-solid rounded border-opacity-30 border-secondary shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+              <h2 className="text-center uppercase text-lg pb-2 font-bold">
+                Rutina
+              </h2>
+              {/* <p className="text-justify">{descriptionRoutine}</p> */}
+              {descriptionRoutine && (
+                <p
+                  className="ql-editor"
+                  dangerouslySetInnerHTML={{ __html: descriptionRoutine }}
+                />
+              )}
+            </div>
+          ) : null}
         </>
       )}
     </div>

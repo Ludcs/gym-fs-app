@@ -99,6 +99,26 @@ const updateUser = async (req, res) => {
   }
 };
 
+const reactiveUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reactivedUser = await User.update(
+      { isActive: true },
+      { where: { id } }
+    );
+    if (reactivedUser[0] === 0) {
+      return res
+        .status(404)
+        .json({ message: 'Usuario no encontrado para reactivar' });
+    }
+
+    res.status(200).json({ message: 'Usuario reactivado correctamente' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error server al reactivar el usuario' });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -240,6 +260,7 @@ module.exports = {
   getAllUsers,
   getUserById,
   updateUser,
+  reactiveUser,
   deleteUser,
   getAllRoutines,
   createRoutine,

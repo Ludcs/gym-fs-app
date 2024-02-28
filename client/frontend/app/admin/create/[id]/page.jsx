@@ -1,6 +1,7 @@
 'use client';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
+//import 'react-quill/dist/quill.core.css';
 import 'react-quill/dist/quill.snow.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -213,7 +214,13 @@ export default function CreatePage() {
           onChange={handleQuillChange}
           autoComplete="off"
         />
-        {/* <div dangerouslySetInnerHTML={{ __html: quillValue }} /> */}
+        <p className="w-full text-center underline font-bold">
+          Previsualizacion, asi lo vera el usuario:
+        </p>
+        <div
+          className="ql-editor border border-solid shadow-md"
+          dangerouslySetInnerHTML={{ __html: quillValue }}
+        />
         <button className="w-fit m-auto border border-primary p-2 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors duration-200">
           {routineValues.userHasRoutine ? 'Actualizar' : 'Crear'}
         </button>
