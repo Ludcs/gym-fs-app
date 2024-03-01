@@ -32,6 +32,7 @@ export default function HomePage() {
   // const userRoutine = await getRoutineByUserId();
 
   // const { objetive, medicalBackground, descriptionRoutine } = userRoutine;
+  const [userInfo, setUserInfo] = useState({});
   const [objetive, setObjetive] = useState('');
   const [medicalBackground, setMedicalBackground] = useState('');
   const [startDate, setStartDate] = useState();
@@ -57,8 +58,19 @@ export default function HomePage() {
     }
   };
 
+  const getUserById = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:8000/users/${userId}`);
+      console.log(data);
+      setUserInfo(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getRoutineByUserId();
+    getUserById();
   }, []);
 
   //if (loading) return <p>Cargando...</p>;
@@ -76,49 +88,62 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          <div className="py-2 flex flex-col gap-2">
-            <h1 className="text-center uppercase font-bold text-xl">
-              <span className="font-normal">Bienvenido</span> {userName} 👋
-            </h1>
-            {startDate !== undefined ? (
-              <p className="text-center">
-                Esta es tu rutina actual creada el:{' '}
-                <span className="font-bold">{formattedDate}</span>
-              </p>
-            ) : (
-              <p className="text-center text-lg p-4">
-                Aun no tienes una rutina, contacta con tu profesor para que te
-                cree una! Cuando la tengas la podras ver aca 🏋️‍♂️
-              </p>
-            )}
-          </div>
-          <div className="py-4 flex flex-col gap-2">
-            {objetive && (
-              <p>
-                🟡 Objetivo: <span className="font-bold">{objetive}</span>
-              </p>
-            )}
-            {medicalBackground && (
-              <p>
-                🟡 Antecedente medico:{' '}
-                <span className="font-bold">{medicalBackground}</span>
-              </p>
-            )}
-          </div>
-          {descriptionRoutine !== '' ? (
-            <div className="py-4 border border-solid rounded border-opacity-30 border-secondary shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-              <h2 className="text-center uppercase text-lg pb-2 font-bold">
-                Rutina
-              </h2>
-              {/* <p className="text-justify">{descriptionRoutine}</p> */}
-              {descriptionRoutine && (
-                <p
-                  className="ql-editor"
-                  dangerouslySetInnerHTML={{ __html: descriptionRoutine }}
-                />
-              )}
-            </div>
-          ) : null}
+          <h1 className="text-center uppercase font-bold text-xl">
+            <span className="font-normal">Bienvenido</span> {userName} 👋
+          </h1>
+          {userInfo.isActive === false ? (
+            <p className="py-5 flex flex-col justify-center text-center">
+              <span className="text-red-500 text-2xl">
+                No estas activo en el sistema ⛔
+              </span>{' '}
+              <span className="text-white">
+                Por favor comunicate con la administracion del gimnasio.
+              </span>
+            </p>
+          ) : (
+            <>
+              <div className="py-2 flex flex-col gap-2">
+                {startDate !== undefined ? (
+                  <p className="text-center">
+                    Esta es tu rutina actual creada el:{' '}
+                    <span className="font-bold">{formattedDate}</span>
+                  </p>
+                ) : (
+                  <p className="text-center text-lg p-4">
+                    Aun no tienes una rutina, contacta con tu profesor para que
+                    te cree una! Cuando la tengas la podras ver aca 🏋️‍♂️
+                  </p>
+                )}
+              </div>
+              <div className="py-4 flex flex-col gap-2">
+                {objetive && (
+                  <p>
+                    🟡 Objetivo: <span className="font-bold">{objetive}</span>
+                  </p>
+                )}
+                {medicalBackground && (
+                  <p>
+                    🟡 Antecedente medico:{' '}
+                    <span className="font-bold">{medicalBackground}</span>
+                  </p>
+                )}
+              </div>
+              {descriptionRoutine !== '' ? (
+                <div className="py-4 border border-solid rounded border-opacity-30 border-secondary shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+                  <h2 className="text-center uppercase text-lg pb-2 font-bold">
+                    Rutina
+                  </h2>
+                  {/* <p className="text-justify">{descriptionRoutine}</p> */}
+                  {descriptionRoutine && (
+                    <p
+                      className="ql-editor"
+                      dangerouslySetInnerHTML={{ __html: descriptionRoutine }}
+                    />
+                  )}
+                </div>
+              ) : null}
+            </>
+          )}
         </>
       )}
     </div>

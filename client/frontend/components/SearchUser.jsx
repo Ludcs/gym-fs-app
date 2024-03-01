@@ -24,7 +24,7 @@ export default function SearchUser({ searchOneUser }) {
   // };
 
   return (
-    <form>
+    <form className="w-2/3">
       <div className="flex relative items-center">
         <FaSistrix size={20} className="absolute left-2 text-primary" />
         <input

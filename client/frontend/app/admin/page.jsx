@@ -12,10 +12,12 @@ import {
   FaUnlock,
 } from 'react-icons/fa6';
 import Loader from '@/components/Loader';
+import Select from '@/components/Select';
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [filteredUser, setFilteredUser] = useState([]);
+  //const [usersWithKeyHasRoutine, setusersWithKeyHasRoutine] = useState(second)
   const [userRoutines, setUserRoutines] = useState([]);
   const [userNameCookie, setUserNameCookie] = useState('');
   //const [loading, setLoading] = useState(true);
@@ -53,38 +55,55 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    getAllUsers();
-    getAllRoutines();
-    //Para no tener problema de hidratacion con el client component:
-    setUserNameCookie(Cookies.get('userName'));
+    const fetchData = async () => {
+      await getAllUsers();
+      await getAllRoutines();
+      //Para no tener problema de hidratacion con el client component:
+      setUserNameCookie(Cookies.get('userName'));
+    };
+
+    fetchData();
   }, []);
 
-  const checkUserHasRoutine = (userId) => {
-    return userRoutines.some(
-      (routine) => routine.userId === userId && routine.userHasRoutine
-    );
-  };
+  useEffect(() => {
+    const checkUserHasRoutine = (userId) => {
+      return userRoutines.some(
+        (routine) => routine.userId === userId && routine.userHasRoutine
+      );
+    };
 
-  const usersWithKeyHasRoutine = filteredUser.map((user) => ({
-    ...user,
-    hasRoutine: checkUserHasRoutine(user.id),
-  }));
-
-  // setUsers(usersWithKeyHasRoutine);
-  // setFilteredUser(usersWithKeyHasRoutine);
-
-  console.log('usuarios con la key hasRoutine:', usersWithKeyHasRoutine);
+    const usersWithKeyHasRoutine = users.map((user) => ({
+      ...user,
+      hasRoutine: checkUserHasRoutine(user.id),
+    }));
+    setUsers(usersWithKeyHasRoutine);
+    setFilteredUser(usersWithKeyHasRoutine);
+    console.log(users);
+    console.log(filteredUser);
+  }, [userRoutines]);
 
   const searchOneUser = (searchString) => {
     if (searchString.trim() === '') {
       setFilteredUser(users);
     } else {
-      let userFounded = usersWithKeyHasRoutine.filter((el) =>
+      let userFounded = filteredUser.filter((el) =>
         `${el.name} ${el.lastname}`
           .toLowerCase()
           .includes(searchString.toLowerCase())
       );
       setFilteredUser(userFounded);
+    }
+  };
+
+  const filterByActivity = (valueActivity) => {
+    if (valueActivity === 'active') {
+      const activeUsers = users.filter((user) => user.isActive);
+      setFilteredUser(activeUsers);
+    } else if (valueActivity === 'inactive') {
+      const inactiveUsers = users.filter((user) => !user.isActive);
+      setFilteredUser(inactiveUsers);
+    } else {
+      setFilteredUser(users);
     }
   };
 
@@ -140,8 +159,11 @@ export default function AdminPage() {
       <div className="flex justify-between items-center w-full text-primary">
         <h1 className="font-bold uppercase">Lista de usuarios</h1>
       </div>
-      {/* Buscar usuario */}
-      <SearchUser searchOneUser={searchOneUser} />
+      {/* Buscar y filtrar usuarios */}
+      <div className="w-full flex justify-between items-center gap-1">
+        <SearchUser searchOneUser={searchOneUser} />
+        <Select filterByActivity={filterByActivity} />
+      </div>
       {/* Mapeo de usuarios */}
       <div className="grid grid-cols-2 gap-4">
         {users.length === 0 ? (
@@ -149,9 +171,9 @@ export default function AdminPage() {
             <Loader />
           </div>
         ) : filteredUser.length === 0 ? (
-          <p>No se encontro el usuario</p>
+          <p className="font-bold">No se encontro el usuario.</p>
         ) : (
-          usersWithKeyHasRoutine
+          filteredUser
             .filter((el) => el.isAdmin !== true)
             .map((el) => (
               <div
@@ -177,7 +199,10 @@ export default function AdminPage() {
                   {el.hasRoutine === true ? (
                     <Link href={`/admin/create/${el.id}`} title="Editar rutina">
                       {el.isActive && (
-                        <FaPen size={20} className="cursor-pointer" />
+                        <FaPen
+                          size={20}
+                          className="cursor-pointer text-blue-600"
+                        />
                       )}
                     </Link>
                   ) : (
@@ -187,7 +212,10 @@ export default function AdminPage() {
                           href={`/admin/create/${el.id}`}
                           title="Crear rutina"
                         >
-                          <FaPlus size={20} className="cursor-pointer" />
+                          <FaPlus
+                            size={20}
+                            className="cursor-pointer text-green-600"
+                          />
                         </Link>
                       )}
                     </>
