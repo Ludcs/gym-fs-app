@@ -9,6 +9,16 @@ const registerUser = async (req, res) => {
   try {
     const { name, lastname, email, password } = req.body;
 
+    const existingUser = await User.findOne({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: 'Este usuario ya esta registrado' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUserRegister = await User.create({

@@ -21,6 +21,7 @@ export default function Login() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState(false);
 
   const router = useRouter();
   //const { login } = useAuthContext();
@@ -58,6 +59,7 @@ export default function Login() {
       //login(token);
     } catch (error) {
       console.log(error);
+      setLoginError(true);
       setLoading(false);
     }
   };
@@ -115,12 +117,17 @@ export default function Login() {
         {loading ? (
           <Loader />
         ) : (
-          <button
-            className="bg-primary border border-secondary text-secondary w-fit p-2 rounded-md transition-colors duration-300  hover:bg-secondary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loginValues.email === '' || loginValues.password === ''}
-          >
-            Iniciar sesion
-          </button>
+          <>
+            {loginError && (
+              <p className="text-red-500">Usuario o password incorrecto</p>
+            )}
+            <button
+              className="bg-primary border border-secondary text-secondary w-fit p-2 rounded-md transition-colors duration-300  hover:bg-secondary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loginValues.email === '' || loginValues.password === ''}
+            >
+              Iniciar sesion
+            </button>
+          </>
         )}
 
         <p className="text-secondary">

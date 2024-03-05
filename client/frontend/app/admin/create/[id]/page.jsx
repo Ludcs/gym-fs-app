@@ -117,6 +117,13 @@ export default function CreatePage() {
     }
   };
 
+  //*Dia corriente para el input type=date en su prop max!
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Enero es 0!
+  const year = today.getFullYear();
+  const formattedToday = `${year}-${month}-${day}`;
+
   const formatDateForBackend = (dateString) => {
     //console.log(dateString);
     const [year, month, day] = dateString.split('-');
@@ -205,6 +212,7 @@ export default function CreatePage() {
           onChange={handleRoutineValues}
           placeholder="Start date"
           autoComplete="off"
+          max={formattedToday}
           className="outline-none border border-primary rounded-md p-2"
         />
         <ReactQuill
@@ -221,7 +229,17 @@ export default function CreatePage() {
           className="ql-editor border border-solid shadow-md"
           dangerouslySetInnerHTML={{ __html: quillValue }}
         />
-        <button className="w-fit m-auto border border-primary p-2 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors duration-200">
+        <button
+          className="w-fit m-auto border border-primary p-2 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          routineValues
+          disabled={
+            routineValues.objetive === '' ||
+            routineValues.medicalBackground === '' ||
+            routineValues.startDate === '' ||
+            routineValues.descriptionRoutine === '' ||
+            quillValue.replace('<p><br></p>', '').trim() === ''
+          }
+        >
           {routineValues.userHasRoutine ? 'Actualizar' : 'Crear'}
         </button>
       </form>

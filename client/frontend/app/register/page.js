@@ -1,7 +1,6 @@
 'use client';
 import axios from 'axios';
 import Link from 'next/link';
-import { useState } from 'react';
 import {
   FaKey,
   FaRegEye,
@@ -9,7 +8,10 @@ import {
   FaRegUser,
   FaSquareEnvelope,
 } from 'react-icons/fa6';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Register() {
   const router = useRouter();
@@ -20,6 +22,7 @@ export default function Register() {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [registerError, setRegisterError] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -36,10 +39,20 @@ export default function Register() {
         'http://localhost:8000/auth/register',
         registerValues
       );
-      console.log(res);
-      router.push('/login');
+      toast('🏋️‍♂️ Registro exitoso, redirigiendo para iniciar sesión', {
+        position: 'bottom-center',
+        pauseOnHover: false,
+        theme: 'dark',
+        closeButton: false,
+        style: { textAlign: 'center' },
+      });
+      // console.log(res);
+      setTimeout(() => {
+        router.push('/login');
+      }, 4000);
     } catch (error) {
       console.log(error);
+      setRegisterError(true);
     }
   };
 
@@ -116,6 +129,9 @@ export default function Register() {
             )}
           </div>
         </div>
+        {registerError && (
+          <p className="text-red-500">Este usuario ya esta registrado</p>
+        )}
         <button
           className="bg-primary border border-secondary text-secondary w-fit p-2 rounded-md transition-colors duration-300  hover:bg-secondary hover:text-primary hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={
@@ -133,6 +149,7 @@ export default function Register() {
             aca!
           </Link>
         </p>
+        <ToastContainer autoClose={3500} />
       </form>
     </div>
   );
