@@ -155,6 +155,29 @@ const getAllRoutines = async (req, res) => {
   }
 };
 
+const getRoutineByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+
+    const userRoutine = await Routine.findOne({
+      where: { userId },
+    });
+
+    if (!userRoutine)
+      return res
+        .status(404)
+        .json({ message: 'No se encontró la rutina para este usuario' });
+
+    res.status(200).json(userRoutine);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: 'Error server al intentar obtener la rutina de este usuario',
+    });
+  }
+};
+
 const createRoutine = async (req, res) => {
   try {
     const {
@@ -188,35 +211,14 @@ const createRoutine = async (req, res) => {
 
     await User.update({ isActive: true }, { where: { id: id } });
 
-    res
-      .status(201)
-      .json({ newRoutine, message: 'Routine was created successfully' });
+    res.status(201).json({
+      success: true,
+      newRoutine,
+      message: 'Routine was created successfully',
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error server al crear la rutina' });
-  }
-};
-
-const getRoutineByUserId = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    console.log(userId);
-
-    const userRoutine = await Routine.findOne({
-      where: { userId },
-    });
-
-    if (!userRoutine)
-      return res
-        .status(404)
-        .json({ message: 'No se encontró la rutina para este usuario' });
-
-    res.status(200).json(userRoutine);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: 'Error server al intentar obtener la rutina de este usuario',
-    });
   }
 };
 

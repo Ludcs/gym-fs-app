@@ -3,6 +3,8 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 //import 'react-quill/dist/quill.core.css';
 import 'react-quill/dist/quill.snow.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -92,7 +94,6 @@ export default function CreatePage() {
     }
   };
 
-  //TODO: no puedo depender de si hay o no userId porque siempre va a haber. Probar agregar otra key al model de Routine x ej: hasRoutine = false (by default) y despues al crear la rutina pasarlo a true
   const createOrUpdateRoutine = async () => {
     try {
       if (routineValues.userHasRoutine) {
@@ -101,17 +102,25 @@ export default function CreatePage() {
           `http://localhost:8000/users/updateRoutine/${id}`,
           routineValues
         );
+        // toast.success('Rutina actualizada, redirigiendo al inicio', {
+        //   position: 'top-right',
+        //   pauseOnHover: false,
+        //   theme: 'colored',
+        //   closeButton: false,
+        //   style: { textAlign: 'center' },
+        // });
       } else {
         // Crear nueva rutina
-        await axios.post(
+        const res = await axios.post(
           `http://localhost:8000/users/createRoutine/${id}`,
           routineValues
         );
+        console.log(res.data.success);
         await axios.put(`http://localhost:8000/users/${id}`, {
           isActive: true,
         });
       }
-      // Redireccionar o mostrar mensaje de éxito
+      // setTimeout(() => {}, 4000);
     } catch (error) {
       console.log(error);
     }
@@ -156,7 +165,6 @@ export default function CreatePage() {
       descriptionRoutine: quillValue,
     });
     console.log(routineValues);
-
     try {
       await createOrUpdateRoutine();
       router.push('/admin');
@@ -167,7 +175,12 @@ export default function CreatePage() {
 
   return (
     <div className="p-4 w-full bg-white flex flex-col text-primary gap-4">
-      <h1 className="font-bold">Crear rutina</h1>
+      {routineValues.userHasRoutine ? (
+        <h1 className="font-bold">ACTUALIZAR</h1>
+      ) : (
+        <h1 className="font-bold">CREAR</h1>
+      )}
+
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
         <input
           className="outline-none border border-primary rounded-md p-2"
@@ -242,6 +255,7 @@ export default function CreatePage() {
         >
           {routineValues.userHasRoutine ? 'Actualizar' : 'Crear'}
         </button>
+        {/* <ToastContainer autoClose={3500} /> */}
       </form>
     </div>
   );

@@ -17,13 +17,30 @@ import Select from '@/components/Select';
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [filteredUser, setFilteredUser] = useState([]);
-  //const [usersWithKeyHasRoutine, setusersWithKeyHasRoutine] = useState(second)
   const [userRoutines, setUserRoutines] = useState([]);
   const [userNameCookie, setUserNameCookie] = useState('');
-  //const [loading, setLoading] = useState(true);
+
+  const getAllRoutines = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/routines/all');
+      return res.data;
+      //setUserRoutines(res.data);
+    } catch (error) {
+      console.error('Error fetching routines:', error);
+      return [];
+    }
+  };
+
+  // const checkUserHasRoutine = (userId) => {
+  //   return userRoutines.some(
+  //     (routine) => routine.userId === userId && routine.userHasRoutine
+  //   );
+  // };
 
   const getAllUsers = async () => {
     try {
+      //await getAllRoutines();
+      const routinesData = await getAllRoutines();
       const res = await axios.get(`http://localhost:8000/users`);
       const usersData = res.data;
 
@@ -38,26 +55,36 @@ export default function AdminPage() {
         a.name.localeCompare(b.name)
       );
 
-      setUsers(sortedData);
-      setFilteredUser(sortedData);
+      const checkUserHasRoutine = (userId) => {
+        return routinesData.some(
+          (routine) => routine.userId === userId && routine.userHasRoutine
+        );
+      };
+
+      const usersWithKeyHasRoutine = sortedData.map((user) => ({
+        ...user,
+        hasRoutine: checkUserHasRoutine(user.id),
+      }));
+
+      setUsers(usersWithKeyHasRoutine);
+      setFilteredUser(usersWithKeyHasRoutine);
+
+      // const usersWithKeyHasRoutine = sortedData.map((user) => ({
+      //   ...user,
+      //   hasRoutine: checkUserHasRoutine(user.id),
+      // }));
+
+      // setUsers(usersWithKeyHasRoutine);
+      // setFilteredUser(usersWithKeyHasRoutine);
     } catch (error) {
       console.error('Error al obtener todos los usuarios', error);
-    }
-  };
-
-  const getAllRoutines = async () => {
-    try {
-      const res = await axios.get('http://localhost:8000/routines/all');
-      setUserRoutines(res.data);
-    } catch (error) {
-      console.error('Error fetching routines:', error);
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await getAllUsers();
-      await getAllRoutines();
+      //await getAllRoutines();
       //Para no tener problema de hidratacion con el client component:
       setUserNameCookie(Cookies.get('userName'));
     };
@@ -65,22 +92,23 @@ export default function AdminPage() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const checkUserHasRoutine = (userId) => {
-      return userRoutines.some(
-        (routine) => routine.userId === userId && routine.userHasRoutine
-      );
-    };
+  // useEffect(() => {
+  //   const checkUserHasRoutine = (userId) => {
+  //     return userRoutines.some(
+  //       (routine) => routine.userId === userId && routine.userHasRoutine
+  //     );
+  //   };
 
-    const usersWithKeyHasRoutine = users.map((user) => ({
-      ...user,
-      hasRoutine: checkUserHasRoutine(user.id),
-    }));
-    setUsers(usersWithKeyHasRoutine);
-    setFilteredUser(usersWithKeyHasRoutine);
-    console.log(users);
-    console.log(filteredUser);
-  }, [userRoutines]);
+  //   const usersWithKeyHasRoutine = users.map((user) => ({
+  //     ...user,
+  //     hasRoutine: checkUserHasRoutine(user.id),
+  //   }));
+  //   setUsers(usersWithKeyHasRoutine);
+  //   setFilteredUser(usersWithKeyHasRoutine);
+  //   //setForceUpdate(false);
+  //   console.log('users con hasRoutine', users);
+  //   console.log('filteredUser con hasRoutine', filteredUser);
+  // }, [userRoutines]);
 
   const searchOneUser = (searchString) => {
     if (searchString.trim() === '') {
@@ -107,6 +135,8 @@ export default function AdminPage() {
     }
   };
 
+  //TODO: al reactivar un usuario, todos los demas tienen signo "+" en vez de "lapiz"
+  //!El problema es volver a llamar a getAllUsers, dado que me setea los users originales sin la key hasRoutine
   const handleReactiveUser = async (id, name, lastname) => {
     console.log(id);
     const confirmReactive = window.confirm(
@@ -123,10 +153,26 @@ export default function AdminPage() {
       );
       console.log(res);
       await getAllUsers();
+      // await getAllRoutines();
+      // const checkUserHasRoutine = (userId) => {
+      //   return userRoutines.some(
+      //     (routine) => routine.userId === userId && routine.userHasRoutine
+      //   );
+      // };
+
+      // const usersWithKeyHasRoutine = users.map((user) => ({
+      //   ...user,
+      //   hasRoutine: checkUserHasRoutine(user.id),
+      // }));
+      // setUsers(usersWithKeyHasRoutine);
+      // setFilteredUser(usersWithKeyHasRoutine);
     } catch (error) {
       console.error(`Error al activar usuario con el id ${id}:`, error);
     }
   };
+
+  //TODO: al inactivar un usuario, todos los demas tienen signo "+" en vez de "lapiz"
+  //!El problema es volver a llamar a getAllUsers, dado que me setea los users originales sin la key hasRoutine
 
   const handleInactiveUser = async (id, name, lastname) => {
     //console.log(id);
@@ -140,6 +186,7 @@ export default function AdminPage() {
         isActive: false,
       });
       console.log(res);
+
       await getAllUsers();
     } catch (error) {
       console.error(`Error al desactivar usuario con el id ${id}:`, error);

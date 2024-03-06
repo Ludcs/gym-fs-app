@@ -55,7 +55,7 @@ export default function Login() {
       } else {
         router.push('/home');
       }
-      setLoading(false);
+      //setLoading(false);
       //login(token);
     } catch (error) {
       console.log(error);
