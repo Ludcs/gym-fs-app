@@ -12,16 +12,6 @@ export default function Navbar() {
 
   // const isAdmin = Cookies.get('isAdmin');
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('beforeunload', clearCookies);
-
-      return () => {
-        window.removeEventListener('beforeunload', clearCookies);
-      };
-    }
-  }, []);
-
   const clearCookies = () => {
     Cookies.remove('userName');
     Cookies.remove('userId');
@@ -36,7 +26,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="bg-secondary flex justify-between items-center p-4">
+    <div className="bg-secondary flex justify-between items-center px-1 py-2">
       {/* {pathname !== '/' && showSidebar ? (
         <Sidebar setShowSidebar={setShowSidebar} />
       ) : (

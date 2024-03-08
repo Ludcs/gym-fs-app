@@ -65,7 +65,7 @@ export default function Login() {
   };
 
   return (
-    <div className="px-4 py-6 flex flex-col gap-5">
+    <div className="px-4 py-6 flex flex-col gap-5 sm:w-[500px] sm:mx-auto md:w-[600px] md:mx-auto lg:w-[650px] lg:mx-auto">
       <p className="text-secondary text-center text-lg font-bold">
         Si ya tienes una cuenta o si recien te registraste, aqui puedes iniciar
         sesion ingresando tu email y password

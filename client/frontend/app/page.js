@@ -9,7 +9,7 @@ export default function Home() {
   // const [showRegisterForm, setShowRegisterForm] = useState(false);
 
   return (
-    <div className="px-4 py-6 text-secondary flex flex-col gap-10">
+    <div className="px-4 py-6 text-secondary flex flex-col gap-10 sm:w-[500px] sm:mx-auto md:w-[600px] md:mx-auto lg:w-[650px] lg:mx-auto">
       <div className="w-full flex justify-center">
         <Image
           src={LogoGym}
@@ -20,8 +20,8 @@ export default function Home() {
           priority={true}
         />
       </div>
-      <div className="px-4 py-6 flex flex-col justify-center items-center w-full gap-2 border-t-2 border-b-2 border-secondary">
-        <h1 className="text-2xl text-center italic font-bold">
+      <div className="flex flex-col justify-center items-center w-full gap-2">
+        <h1 className="px-2 py-4 text-2xl text-center italic font-bold border-t-2 border-b-2 border-secondary">
           "Forge your destiny, sculpt your strength"
         </h1>
       </div>

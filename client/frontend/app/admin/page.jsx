@@ -194,7 +194,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="p-4 w-full bg-white flex flex-col gap-4 min-h-screen">
+    <div className="p-4 w-full bg-white flex flex-col gap-4">
       <div className="w-full flex items-center justify-start font-bold">
         <p>
           Bienvenido administrador:{' '}
@@ -212,91 +212,96 @@ export default function AdminPage() {
         <Select filterByActivity={filterByActivity} />
       </div>
       {/* Mapeo de usuarios */}
-      <div className="grid grid-cols-2 gap-4">
+      <div>
         {users.length === 0 ? (
           <div className="w-full flex justify-center items-center">
             <Loader />
           </div>
         ) : filteredUser.length === 0 ? (
-          <p className="font-bold">No se encontro el usuario.</p>
+          <p className="font-bold text-center">No se encontró el usuario.</p>
         ) : (
-          filteredUser
-            .filter((el) => el.isAdmin !== true)
-            .map((el) => (
-              <div
-                key={el.id}
-                className={`${
-                  el.isActive === false
-                    ? 'flex flex-col justify-center items-center border border-primary  text-primary rounded-md p-2 gap-2 opacity-60'
-                    : 'flex flex-col justify-center items-center border border-primary text-primary rounded-md p-2 gap-2'
-                }`}
-              >
-                <p className="font-bold">
-                  {el.name} {el.lastname}
-                </p>
-                <p className="text-center">
-                  Se registro el: {el.createdAt.split('T')}
-                </p>
-                {el.isActive === true ? (
-                  <p className="font-bold">Estado: Activo</p>
-                ) : (
-                  <p className="font-bold">Estado: Inactivo</p>
-                )}
-                <div className="flex flex-row justify-center items-center gap-6">
-                  {el.hasRoutine === true ? (
-                    <Link href={`/admin/create/${el.id}`} title="Editar rutina">
-                      {el.isActive && (
-                        <FaPen
-                          size={20}
-                          className="cursor-pointer text-blue-600"
-                        />
-                      )}
-                    </Link>
-                  ) : (
-                    <>
-                      {el.isActive && (
-                        <Link
-                          href={`/admin/create/${el.id}`}
-                          title="Crear rutina"
-                        >
-                          <FaPlus
-                            size={20}
-                            className="cursor-pointer text-green-600"
-                          />
-                        </Link>
-                      )}
-                    </>
-                  )}
+          <div className="grid grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-4">
+            {filteredUser
+              .filter((el) => el.isAdmin !== true)
+              .map((el) => (
+                <div
+                  key={el.id}
+                  className={`${
+                    el.isActive === false
+                      ? 'flex flex-col justify-center items-center border border-primary text-primary rounded-md p-2 gap-2 opacity-60'
+                      : 'flex flex-col justify-center items-center border border-primary text-primary rounded-md p-2 gap-2'
+                  }`}
+                >
+                  <p className="font-bold">
+                    {el.name} {el.lastname}
+                  </p>
+                  <p className="text-center">
+                    Se registró el: {el.createdAt.split('T')}
+                  </p>
                   {el.isActive === true ? (
-                    <>
-                      <FaLock
+                    <p className="font-bold">Estado: Activo</p>
+                  ) : (
+                    <p className="font-bold">Estado: Inactivo</p>
+                  )}
+                  <div className="flex flex-row justify-center items-center gap-6">
+                    {el.hasRoutine === true ? (
+                      <Link
+                        href={`/admin/create/${el.id}`}
+                        title="Editar rutina"
+                      >
+                        {el.isActive && (
+                          <FaPen
+                            size={20}
+                            className="cursor-pointer text-blue-600"
+                          />
+                        )}
+                      </Link>
+                    ) : (
+                      <>
+                        {el.isActive && (
+                          <Link
+                            href={`/admin/create/${el.id}`}
+                            title="Crear rutina"
+                          >
+                            <FaPlus
+                              size={20}
+                              className="cursor-pointer text-green-600"
+                            />
+                          </Link>
+                        )}
+                      </>
+                    )}
+                    {el.isActive === true ? (
+                      <>
+                        <FaLock
+                          size={20}
+                          className="cursor-pointer"
+                          title="Inactivar usuario"
+                          onClick={() =>
+                            handleInactiveUser(el.id, el.name, el.lastname)
+                          }
+                        />
+                        <FaRegTrashCan
+                          size={20}
+                          className="cursor-pointer"
+                          title="Eliminar usuario"
+                          //onClick={() => handleDisabledUser(el.id)}
+                        />
+                      </>
+                    ) : (
+                      <FaUnlock
                         size={20}
                         className="cursor-pointer"
-                        title="Inactivar usuario"
+                        title="Activar usuario"
                         onClick={() =>
-                          handleInactiveUser(el.id, el.name, el.lastname)
+                          handleReactiveUser(el.id, el.name, el.lastname)
                         }
                       />
-                      <FaRegTrashCan
-                        size={20}
-                        className="cursor-pointer"
-                        title="Eliminar usuario"
-                        //onClick={() => handleDisabledUser(el.id)}
-                      />
-                    </>
-                  ) : (
-                    <FaUnlock
-                      size={20}
-                      className="cursor-pointer"
-                      title="Activar usuario"
-                      onClick={() =>
-                        handleReactiveUser(el.id, el.name, el.lastname)
-                      }
-                    />
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+          </div>
         )}
       </div>
     </div>
