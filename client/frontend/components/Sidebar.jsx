@@ -31,7 +31,7 @@ export default function Sidebar({ setShowSidebar }) {
   };
 
   return (
-    <div className="bg-white h-screen absolute left-0 top-0 py-4 pt-6 flex flex-col pl-4 pr-8 z-10">
+    <div className="bg-white h-screen absolute left-0 top-0 py-4 pt-6 flex flex-col pl-4 pr-8 z-10 border-slate-400 border-r-2">
       <button
         className="absolute top-2 right-2 cursor-pointer"
         onClick={() => setShowSidebar(false)}

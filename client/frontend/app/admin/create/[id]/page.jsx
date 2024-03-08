@@ -8,6 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function CreatePage() {
   const router = useRouter();
@@ -245,6 +246,7 @@ export default function CreatePage() {
         <button
           className="w-fit m-auto border border-primary p-2 rounded-md cursor-pointer hover:bg-primary hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           routineValues
+          type="submit"
           disabled={
             routineValues.objetive === '' ||
             routineValues.medicalBackground === '' ||
@@ -255,6 +257,12 @@ export default function CreatePage() {
         >
           {routineValues.userHasRoutine ? 'Actualizar' : 'Crear'}
         </button>
+        <Link
+          href={'/admin'}
+          className="w-fit m-auto p-1 border-transparent rounded-md bg-green-500 hover:bg-green-400 transition-colors duration-200"
+        >
+          Volver al panel de usuarios
+        </Link>
         {/* <ToastContainer autoClose={3500} /> */}
       </form>
     </div>

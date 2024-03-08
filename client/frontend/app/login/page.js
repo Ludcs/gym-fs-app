@@ -42,10 +42,10 @@ export default function Login() {
         'http://localhost:8000/auth/login',
         loginValues
       );
-      Cookies.set('userName', data.userName, { expires: 7, path: '/' });
-      Cookies.set('userId', data.userId, { expires: 7, path: '/' });
-      Cookies.set('isAdmin', data.isAdmin, { expires: 7, path: '/' });
-      Cookies.set('token', data.token, { expires: 7, path: '/' });
+      Cookies.set('userName', data.userName, { expires: 1 / 12, path: '/' }); //Expire in 2hs: 24hs(1 dia) dividido en 12hs = 2hs
+      Cookies.set('userId', data.userId, { expires: 1 / 12, path: '/' });
+      Cookies.set('isAdmin', data.isAdmin, { expires: 1 / 12, path: '/' });
+      Cookies.set('token', data.token, { expires: 1 / 12, path: '/' });
       //console.log(data);
 
       //const token = data.token;
