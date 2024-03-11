@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
-// const cookie = require('cookie');
 const User = require('../models/User');
 
 //register
@@ -57,29 +56,6 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Password incorrecto' });
 
     const token = jwt.sign({ id: existingUser.id }, process.env.SECRETJWT);
-
-    // const cookieOptions = {
-    //   httpOnly: true,
-    //   maxAge: 60 * 60 * 24 * 7, // 1 week
-    //   sameSite: 'strict',
-    //   path: '/',
-    // };
-
-    // res.setHeader(
-    //   'Set-cookie',
-    //   cookie.serialize('token', token, cookieOptions),
-    //   cookie.serialize('userId', existingUser.id.toString(), cookieOptions),
-    //   cookie.serialize(
-    //     'isAdmin',
-    //     existingUser.isAdmin.toString(),
-    //     cookieOptions
-    //   ),
-    //   cookie.serialize(
-    //     'userName',
-    //     `${existingUser.name} ${existingUser.lastname}`,
-    //     cookieOptions
-    //   )
-    // );
 
     return res.status(200).json({
       userId: existingUser.id,

@@ -4,42 +4,27 @@ import Cookies from 'js-cookie';
 import Link from 'next/link';
 import SearchUser from '@/components/SearchUser';
 import { useState, useEffect } from 'react';
-import {
-  FaPlus,
-  FaPen,
-  FaRegTrashCan,
-  FaLock,
-  FaUnlock,
-} from 'react-icons/fa6';
+import { FaPlus, FaPen, FaLock, FaUnlock } from 'react-icons/fa6';
 import Loader from '@/components/Loader';
 import Select from '@/components/Select';
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [filteredUser, setFilteredUser] = useState([]);
-  const [userRoutines, setUserRoutines] = useState([]);
   const [userNameCookie, setUserNameCookie] = useState('');
 
   const getAllRoutines = async () => {
     try {
       const res = await axios.get('http://localhost:8000/routines/all');
       return res.data;
-      //setUserRoutines(res.data);
     } catch (error) {
       console.error('Error fetching routines:', error);
       return [];
     }
   };
 
-  // const checkUserHasRoutine = (userId) => {
-  //   return userRoutines.some(
-  //     (routine) => routine.userId === userId && routine.userHasRoutine
-  //   );
-  // };
-
   const getAllUsers = async () => {
     try {
-      //await getAllRoutines();
       const routinesData = await getAllRoutines();
       const res = await axios.get(`http://localhost:8000/users`);
       const usersData = res.data;
@@ -68,14 +53,6 @@ export default function AdminPage() {
 
       setUsers(usersWithKeyHasRoutine);
       setFilteredUser(usersWithKeyHasRoutine);
-
-      // const usersWithKeyHasRoutine = sortedData.map((user) => ({
-      //   ...user,
-      //   hasRoutine: checkUserHasRoutine(user.id),
-      // }));
-
-      // setUsers(usersWithKeyHasRoutine);
-      // setFilteredUser(usersWithKeyHasRoutine);
     } catch (error) {
       console.error('Error al obtener todos los usuarios', error);
     }
@@ -84,31 +61,11 @@ export default function AdminPage() {
   useEffect(() => {
     const fetchData = async () => {
       await getAllUsers();
-      //await getAllRoutines();
-      //Para no tener problema de hidratacion con el client component:
       setUserNameCookie(Cookies.get('userName'));
     };
 
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   const checkUserHasRoutine = (userId) => {
-  //     return userRoutines.some(
-  //       (routine) => routine.userId === userId && routine.userHasRoutine
-  //     );
-  //   };
-
-  //   const usersWithKeyHasRoutine = users.map((user) => ({
-  //     ...user,
-  //     hasRoutine: checkUserHasRoutine(user.id),
-  //   }));
-  //   setUsers(usersWithKeyHasRoutine);
-  //   setFilteredUser(usersWithKeyHasRoutine);
-  //   //setForceUpdate(false);
-  //   console.log('users con hasRoutine', users);
-  //   console.log('filteredUser con hasRoutine', filteredUser);
-  // }, [userRoutines]);
 
   const searchOneUser = (searchString) => {
     if (searchString.trim() === '') {
@@ -135,8 +92,6 @@ export default function AdminPage() {
     }
   };
 
-  //TODO: al reactivar un usuario, todos los demas tienen signo "+" en vez de "lapiz"
-  //!El problema es volver a llamar a getAllUsers, dado que me setea los users originales sin la key hasRoutine
   const handleReactiveUser = async (id, name, lastname) => {
     console.log(id);
     const confirmReactive = window.confirm(
@@ -153,29 +108,12 @@ export default function AdminPage() {
       );
       console.log(res);
       await getAllUsers();
-      // await getAllRoutines();
-      // const checkUserHasRoutine = (userId) => {
-      //   return userRoutines.some(
-      //     (routine) => routine.userId === userId && routine.userHasRoutine
-      //   );
-      // };
-
-      // const usersWithKeyHasRoutine = users.map((user) => ({
-      //   ...user,
-      //   hasRoutine: checkUserHasRoutine(user.id),
-      // }));
-      // setUsers(usersWithKeyHasRoutine);
-      // setFilteredUser(usersWithKeyHasRoutine);
     } catch (error) {
       console.error(`Error al activar usuario con el id ${id}:`, error);
     }
   };
 
-  //TODO: al inactivar un usuario, todos los demas tienen signo "+" en vez de "lapiz"
-  //!El problema es volver a llamar a getAllUsers, dado que me setea los users originales sin la key hasRoutine
-
   const handleInactiveUser = async (id, name, lastname) => {
-    //console.log(id);
     const confirmDelete = window.confirm(
       `Estas seguro de inactivar el usuario: ${name} ${lastname}?`
     );
@@ -207,7 +145,7 @@ export default function AdminPage() {
         <h1 className="font-bold uppercase">Lista de usuarios</h1>
       </div>
       {/* Buscar y filtrar usuarios */}
-      <div className="w-full flex justify-between items-center gap-1">
+      <div className="w-full flex justify-between items-center gap-1 sm:w-full sm:items-start md:w-[600px] md:items-start lg:w-[650px] lg:items-start">
         <SearchUser searchOneUser={searchOneUser} />
         <Select filterByActivity={filterByActivity} />
       </div>
@@ -281,12 +219,6 @@ export default function AdminPage() {
                             handleInactiveUser(el.id, el.name, el.lastname)
                           }
                         />
-                        <FaRegTrashCan
-                          size={20}
-                          className="cursor-pointer"
-                          title="Eliminar usuario"
-                          //onClick={() => handleDisabledUser(el.id)}
-                        />
                       </>
                     ) : (
                       <FaUnlock
@@ -307,49 +239,3 @@ export default function AdminPage() {
     </div>
   );
 }
-
-// const cookieStore = cookies().getAll();
-// const allCookies = cookieStore.map(({ name, value }) => ({ [name]: value }));
-// const isAdminObject = allCookies.find((cookie) => 'isAdmin' in cookie);
-// const isAdmin = isAdminObject ? isAdminObject.isAdmin : null;
-
-// async function getAllUsers() {
-//   const res = await fetch(`http://localhost:8000/users`);
-
-//   if (!res.ok) {
-//     throw new Error('Failed to fetch data');
-//   }
-
-//   const data = await res.json();
-
-// const formattedData = data.map((user) => {
-//   const formattedCreatedAt = new Date(user.createdAt).toLocaleDateString();
-//   return { ...user, createdAt: formattedCreatedAt };
-// });
-
-//   const sortedData = formattedData.sort((a, b) => a.name.localeCompare(b.name));
-//   return sortedData;
-// }
-
-// async function getUserByName(name = 'Luciano', lastname = 'De Carolis') {
-//   const res = await fetch(
-//     `http://localhost:8000/users/search?name=${name}&lastname=${lastname}`
-//   );
-
-//   if (!res.ok) {
-//     throw new Error('Failed to fetch user data');
-//   }
-//   const data = await res.json();
-//   return data;
-// }
-
-// const handleAddRoutineById = async (id) => {
-//   console.log(id);
-
-//   try {
-//     const { data } = await axios.get(`http://localhost:8000/users/${id}`);
-//     console.log(data);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };

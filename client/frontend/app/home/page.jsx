@@ -1,24 +1,4 @@
 'use client';
-
-// import { cookies } from 'next/headers';
-
-// const cookieStore = cookies().getAll();
-// const allCookies = cookieStore.map(({ name, value }) => ({ [name]: value }));
-// console.log({ allCookies });
-
-// const userIdObject = allCookies.find((cookie) => 'userId' in cookie);
-// const userId = userIdObject ? userIdObject.userId : null;
-
-// const userNameObject = allCookies.find((cookie) => 'userName' in cookie);
-// const userName = userNameObject ? userNameObject.userName : null;
-
-// async function getRoutineByUserId() {
-//   //console.log({ userId });
-//   const res = await fetch(`http://localhost:8000/users/routine/${userId}`);
-//   const data = await res.json();
-//   //console.log({ data });
-//   return data;
-// }
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Loader from '@/components/Loader';
@@ -29,9 +9,6 @@ const userId = Cookies.get('userId');
 const userName = Cookies.get('userName');
 
 export default function HomePage() {
-  // const userRoutine = await getRoutineByUserId();
-
-  // const { objetive, medicalBackground, descriptionRoutine } = userRoutine;
   const [userInfo, setUserInfo] = useState({});
   const [objetive, setObjetive] = useState('');
   const [medicalBackground, setMedicalBackground] = useState('');
@@ -73,8 +50,6 @@ export default function HomePage() {
     getUserById();
   }, []);
 
-  //if (loading) return <p>Cargando...</p>;
-
   const backendDate = new Date(startDate);
   const formattedDate = `${backendDate.getDate()}/${
     backendDate.getMonth() + 1
@@ -115,33 +90,34 @@ export default function HomePage() {
                   </p>
                 )}
               </div>
-              <div className="py-4 flex flex-col gap-2">
-                {objetive && (
-                  <p>
-                    🟡 Objetivo: <span className="font-bold">{objetive}</span>
-                  </p>
-                )}
-                {medicalBackground && (
-                  <p>
-                    🟡 Antecedente medico:{' '}
-                    <span className="font-bold">{medicalBackground}</span>
-                  </p>
-                )}
-              </div>
-              {descriptionRoutine !== '' ? (
-                <div className="py-4 border border-solid rounded border-opacity-30 border-secondary shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-                  <h2 className="text-center uppercase text-lg pb-2 font-bold">
-                    Rutina
-                  </h2>
-                  {/* <p className="text-justify">{descriptionRoutine}</p> */}
-                  {descriptionRoutine && (
-                    <p
-                      className="ql-editor"
-                      dangerouslySetInnerHTML={{ __html: descriptionRoutine }}
-                    />
+              <div className="sm:w-[500px] sm:mx-auto md:w-[600px] md:mx-auto lg:w-[650px] lg:mx-auto">
+                <div className="py-4 flex flex-col gap-2 ">
+                  {objetive && (
+                    <p>
+                      🟡 Objetivo: <span className="font-bold">{objetive}</span>
+                    </p>
+                  )}
+                  {medicalBackground && (
+                    <p>
+                      🟡 Antecedente medico:{' '}
+                      <span className="font-bold">{medicalBackground}</span>
+                    </p>
                   )}
                 </div>
-              ) : null}
+                {descriptionRoutine !== '' ? (
+                  <div className="py-4 border border-solid rounded border-opacity-30 border-secondary shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+                    <h2 className="text-center uppercase text-lg pb-2 font-bold">
+                      Rutina
+                    </h2>
+                    {descriptionRoutine && (
+                      <p
+                        className="ql-editor"
+                        dangerouslySetInnerHTML={{ __html: descriptionRoutine }}
+                      />
+                    )}
+                  </div>
+                ) : null}
+              </div>
             </>
           )}
         </>

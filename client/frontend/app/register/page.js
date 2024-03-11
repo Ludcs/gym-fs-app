@@ -46,7 +46,6 @@ export default function Register() {
         closeButton: false,
         style: { textAlign: 'center' },
       });
-      // console.log(res);
       setTimeout(() => {
         router.push('/login');
       }, 4000);

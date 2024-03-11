@@ -10,11 +10,9 @@ import {
 } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-//import { useAuthContext } from '../contexts/authContext';
 import Loader from '@/components/Loader';
 
 export default function Login() {
-  // const [, setCookies] = useCookies(['access_token']);
   const [loginValues, setLoginValues] = useState({
     email: '',
     password: '',
@@ -24,7 +22,6 @@ export default function Login() {
   const [loginError, setLoginError] = useState(false);
 
   const router = useRouter();
-  //const { login } = useAuthContext();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -46,17 +43,12 @@ export default function Login() {
       Cookies.set('userId', data.userId, { expires: 1 / 12, path: '/' });
       Cookies.set('isAdmin', data.isAdmin, { expires: 1 / 12, path: '/' });
       Cookies.set('token', data.token, { expires: 1 / 12, path: '/' });
-      //console.log(data);
-
-      //const token = data.token;
 
       if (data.isAdmin) {
         router.push('/admin');
       } else {
         router.push('/home');
       }
-      //setLoading(false);
-      //login(token);
     } catch (error) {
       console.log(error);
       setLoginError(true);

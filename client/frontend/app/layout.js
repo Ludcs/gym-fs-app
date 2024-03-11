@@ -4,7 +4,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AuthContextProvider from './contexts/authContext';
 
-// const inter = Inter({ subsets: ['latin'] });
 const roboto = Roboto({
   weight: ['400', '500', '700'],
   style: 'normal',

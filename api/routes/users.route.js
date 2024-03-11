@@ -4,7 +4,7 @@ const {
   getUserById,
   updateUser,
   reactiveUser,
-  deleteUser,
+  inactiveUser,
   getAllRoutines,
   createRoutine,
   getRoutineByUserId,
@@ -16,11 +16,10 @@ const usersRouter = express.Router();
 
 //Users
 usersRouter.get('/users', getAllUsers);
-// usersRouter.get('/users/search', getUserByName);
 usersRouter.get('/users/:id', getUserById);
 usersRouter.put('/users/:id', updateUser);
 usersRouter.put('/users/reactive/:id', reactiveUser);
-usersRouter.delete('/users/:id', deleteUser);
+usersRouter.delete('/users/:id', inactiveUser);
 
 //Routines
 usersRouter.get('/routines/all', getAllRoutines);

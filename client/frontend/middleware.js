@@ -4,9 +4,6 @@ export function middleware(request) {
   let token = request.cookies.get('token');
   let isAdmin = request.cookies.get('isAdmin');
 
-  // console.log('Middleware token:', token);
-  // console.log('Middleware isAdmin:', isAdmin);
-
   if (!token && request.nextUrl.pathname.startsWith('/admin')) {
     const response = NextResponse.redirect(new URL('/login', request.url));
     return response;

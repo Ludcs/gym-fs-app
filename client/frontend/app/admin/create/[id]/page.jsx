@@ -1,10 +1,7 @@
 'use client';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
-//import 'react-quill/dist/quill.core.css';
 import 'react-quill/dist/quill.snow.css';
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -66,7 +63,6 @@ export default function CreatePage() {
       );
       console.log(data);
       const formattedStartDate = formatDate(data.startDate);
-      //console.log(formattedStartDate);
       setRoutineValues((prevState) => ({
         ...prevState,
         userId: data.userId,
@@ -98,20 +94,11 @@ export default function CreatePage() {
   const createOrUpdateRoutine = async () => {
     try {
       if (routineValues.userHasRoutine) {
-        // Actualizar rutina existente
         await axios.put(
           `http://localhost:8000/users/updateRoutine/${id}`,
           routineValues
         );
-        // toast.success('Rutina actualizada, redirigiendo al inicio', {
-        //   position: 'top-right',
-        //   pauseOnHover: false,
-        //   theme: 'colored',
-        //   closeButton: false,
-        //   style: { textAlign: 'center' },
-        // });
       } else {
-        // Crear nueva rutina
         const res = await axios.post(
           `http://localhost:8000/users/createRoutine/${id}`,
           routineValues
@@ -121,21 +108,18 @@ export default function CreatePage() {
           isActive: true,
         });
       }
-      // setTimeout(() => {}, 4000);
     } catch (error) {
       console.log(error);
     }
   };
 
-  //*Dia corriente para el input type=date en su prop max!
   const today = new Date();
   const day = String(today.getDate()).padStart(2, '0');
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // Enero es 0!
+  const month = String(today.getMonth() + 1).padStart(2, '0');
   const year = today.getFullYear();
   const formattedToday = `${year}-${month}-${day}`;
 
   const formatDateForBackend = (dateString) => {
-    //console.log(dateString);
     const [year, month, day] = dateString.split('-');
     return `${day}/${month}/${year}`;
   };
@@ -165,7 +149,6 @@ export default function CreatePage() {
       ...routineValues,
       descriptionRoutine: quillValue,
     });
-    console.log(routineValues);
     try {
       await createOrUpdateRoutine();
       router.push('/admin');
@@ -182,7 +165,10 @@ export default function CreatePage() {
         <h1 className="font-bold">CREAR</h1>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full flex flex-col gap-4 sm:w-[500px] sm:mx-auto md:w-[600px] md:mx-auto lg:w-[650px] lg:mx-auto"
+      >
         <input
           className="outline-none border border-primary rounded-md p-2"
           type="text"
@@ -263,60 +249,7 @@ export default function CreatePage() {
         >
           Volver al panel de usuarios
         </Link>
-        {/* <ToastContainer autoClose={3500} /> */}
       </form>
     </div>
   );
 }
-
-// useEffect(() => {
-//   const fetchData = async () => {
-//     try {
-//       await getRoutineByUserId();
-//     } catch (error) {
-//       if (error.response.status === 404) {
-//         // No se encontró la rutina, actualizar solo con los datos del usuario
-//         await getUserById();
-//       } else {
-//         console.log(error);
-//       }
-//     }
-//   };
-//   fetchData();
-// }, []);
-
-// const getUserById = async () => {
-//   try {
-//     const { data } = await axios.get(`http://localhost:8000/users/${id}`);
-//     setRoutineValues((prevState) => ({
-//       ...prevState,
-//       name: data.name,
-//       lastname: data.lastname,
-//     }));
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// const getRoutineByUserId = async () => {
-//   try {
-//     const { data } = await axios.get(
-//       `http://localhost:8000/users/routine/${id}`
-//     );
-
-//     const formattedStartDate = formatDate(data.startDate);
-//     console.log(formattedStartDate);
-//     setRoutineValues((prevState) => ({
-//       ...prevState,
-//       userId: data.userId,
-//       name: data.name,
-//       lastname: data.lastname,
-//       objetive: data.objetive,
-//       medicalBackground: data.medicalBackground,
-//       startDate: formattedStartDate,
-//     }));
-//     setQuillValue(data.descriptionRoutine);
-//   } catch (error) {
-//     throw error;
-//   }
-// };

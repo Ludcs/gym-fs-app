@@ -1,13 +1,8 @@
 import Image from 'next/image';
 import LogoGym from '@/assets/LogoGym.jpg';
 import Link from 'next/link';
-// import Login from '@/components/Login';
-// import Register from '@/components/Register';
-// import { useState } from 'react';
 
 export default function Home() {
-  // const [showRegisterForm, setShowRegisterForm] = useState(false);
-
   return (
     <div className="px-4 py-6 text-secondary flex flex-col gap-10 sm:w-[500px] sm:mx-auto md:w-[600px] md:mx-auto lg:w-[650px] lg:mx-auto">
       <div className="w-full flex justify-center">
