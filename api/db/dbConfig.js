@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config();
 
-const sequelize = new Sequelize('GymDb', 'root', 'esotilin1282', {
+const sequelize = new Sequelize('GymDb', 'root', process.env.PASSDBCONFIG, {
   host: 'localhost',
   dialect: 'mysql',
   logging: console.log,
