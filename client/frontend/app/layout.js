@@ -12,7 +12,7 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: 'Devs Gym 🦾',
+  title: 'Elite Knights Gym 🦾',
   description: 'Gimnasio ubicado en la ciudad de Parana',
 };
 
